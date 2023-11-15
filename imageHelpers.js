@@ -4,11 +4,8 @@ export async function fetchImageAsBase64(url) {
     xhr.onload = function () {
       const reader = new window.FileReader();
       reader.onloadend = function () {
-        // truncate 'data:image/jpeg;base64,' from the start of the base64 string
         const base64 = reader.result.replace('data:image/jpeg;base64,', '');
         resolve(base64);
-
-        // resolve(reader.result);
       };
       reader.readAsDataURL(xhr.response);
     };

@@ -4,8 +4,8 @@ import { fetchImageAsBase64 } from './imageHelpers'; // Placeholder for image fe
 const sealImageUrl =
   'https://raw.githubusercontent.com/Disfactory/Disfactory/master/backend/doc_resources/seal.png';
 
-const lowerCaseNumber = '〇一二三四五六七八九';
-const toLowerCaseNumber = (number) => lowerCaseNumber[number];
+// const lowerCaseNumber = '〇一二三四五六七八九';
+// const toLowerCaseNumber = (number) => lowerCaseNumber[number];
 
 const STAFF_EMAIL = {
   賴沛蓮: 'peii@cet-taiwan.org',
@@ -24,13 +24,14 @@ function getSenderParagraphs(sender = '賴沛蓮') {
   return context.map(
     (text) =>
       new docx.Paragraph({
+        style: 'Normal',
         spacing: {
-          line: 10,
+          line: 100,
         },
         children: [
           new docx.TextRun({
             text,
-            size: 10,
+            size: 20,
           }),
         ],
         alignment: docx.AlignmentType.RIGHT,
@@ -62,13 +63,14 @@ function getReceiverParagraphs(serealNumber = '00000000') {
   return context.map(
     (text) =>
       new docx.Paragraph({
+        style: 'Normal',
         spacing: {
-          line: 10,
+          line: 100,
         },
         children: [
           new docx.TextRun({
             text,
-            size: 10,
+            size: 28,
           }),
         ],
         alignment: docx.AlignmentType.LEFT,
@@ -86,13 +88,14 @@ function getSubjectParagraphs(location = '') {
   return context.map(
     (text) =>
       new docx.Paragraph({
+        style: 'Normal',
         spacing: {
-          line: 21,
+          line: 210,
         },
         children: [
           new docx.TextRun({
             text,
-            size: 14,
+            size: 28,
           }),
         ],
         alignment: docx.AlignmentType.LEFT,
@@ -110,13 +113,14 @@ function getContextParagraphs(location = '') {
   return context.map(
     (text) =>
       new docx.Paragraph({
+        style: 'Normal',
         spacing: {
-          line: 21,
+          line: 210,
         },
         children: [
           new docx.TextRun({
             text,
-            size: 14,
+            size: 28,
           }),
         ],
         alignment: docx.AlignmentType.LEFT,
@@ -145,13 +149,14 @@ function getCCParagraphs(legislator = 'XXX', _townName = null) {
   return context.map(
     (text) =>
       new docx.Paragraph({
+        style: 'Normal',
         spacing: {
-          line: 12,
+          line: 120,
         },
         children: [
           new docx.TextRun({
             text,
-            size: 12,
+            size: 24,
           }),
         ],
         alignment: docx.AlignmentType.LEFT,
@@ -190,42 +195,55 @@ async function createImageParagraph(imageURL) {
 
 // Main document generation function
 export async function generate() {
-  // Add images (placeholder function)
-  // Note: Ensure fetchImageAsBase64 function handles asynchronous image fetching
-  const paragraph = await createImageParagraph(
-    'https://i.imgur.com/4cFtGFW.jpeg',
-  );
-
   const doc = new docx.Document({
     // creator: 'Your Creator Name',
     // title: 'Your Document Title',
     // description: 'Your Document Description',
     styles: {
-      default: {},
-      paragraphStyles: [],
+      default: {
+        document: {
+          run: {
+            font: '標楷體',
+            size: 12,
+          },
+        },
+      },
+      paragraphStyles: [
+        {
+          id: 'Normal',
+          name: 'Normal',
+          basedOn: 'Normal',
+          next: 'Normal',
+          run: {
+            font: '標楷體',
+            size: 24,
+          },
+        },
+      ],
     },
     sections: [
       {
         children: [
           // original
           new docx.Paragraph({
+            style: 'Normal',
             children: [
               new docx.TextRun({
                 text: '正本',
-                size: 12,
               }),
             ],
             spacing: {
-              line: 20,
+              line: 200,
             },
           }),
 
           // title
           new docx.Paragraph({
+            style: 'Normal',
             children: [
               new docx.TextRun({
                 text: '地球公民基金會 函',
-                size: 20,
+                size: 40,
               }),
             ],
             alignment: docx.AlignmentType.CENTER,
@@ -245,21 +263,8 @@ export async function generate() {
 
           // cc
           ...getCCParagraphs('XXX', '台北市中山區'),
-
-          paragraph,
         ],
       },
-    ],
-  });
-
-  //
-  // // Add a page break
-  doc.addSection({
-    children: [
-      new docx.Paragraph({
-        text: 'Start of a new page',
-        pageBreakBefore: true,
-      }),
     ],
   });
 

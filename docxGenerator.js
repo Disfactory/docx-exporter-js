@@ -4,8 +4,8 @@ import { fetchImageAsBase64 } from './imageHelpers'; // Placeholder for image fe
 const sealImageUrl =
   'https://raw.githubusercontent.com/Disfactory/Disfactory/master/backend/doc_resources/seal.png';
 
-// const lowerCaseNumber = '〇一二三四五六七八九';
-// const toLowerCaseNumber = (number) => lowerCaseNumber[number];
+const lowerCaseNumber = '〇一二三四五六七八九';
+const toLowerCaseNumber = (number) => lowerCaseNumber[number];
 
 const STAFF_EMAIL = {
   賴沛蓮: 'peii@cet-taiwan.org',
@@ -171,17 +171,77 @@ function getCCParagraphs(legislator = 'XXX', _townName = null) {
   );
 }
 
-async function createImageParagraph(imageURL, width = 100, height = 100) {
+async function createAttachmentParagraphs(imageUrls) {
+  /** @type {docx.Paragraph[]} */
+  const imageParagraphs = await Promise.all(
+    imageUrls.map((url) => {
+      return createImageParagraph(url, docx.convertInchesToTwip(3));
+    }),
+  );
+
+  const descriptionParagraphs = new Array(imageUrls.length)
+    .fill(0)
+    .map((_, index) => {
+      return new docx.Paragraph({
+        style: 'Normal',
+        spacing: {
+          line: 120,
+        },
+        children: [
+          new docx.TextRun({
+            text: `附件 ${toLowerCaseNumber(index + 1)}`,
+            size: 24,
+          }),
+        ],
+        alignment: docx.AlignmentType.LEFT,
+      });
+    });
+
+  // one description paragraph for each image
+  const mappedParagraphs = imageParagraphs
+    .map((paragraph, index) => {
+      return [descriptionParagraphs[index], paragraph];
+    })
+    .flat();
+
+  return mappedParagraphs;
+}
+
+async function createImageParagraph(imageURL, _width, _height) {
   return fetchImageAsBase64(imageURL)
     .then((data) => {
-      console.log(data.length);
+      const {
+        base64,
+        dimension: { width, height },
+      } = data;
+
+      const ratio = width / height;
+
+      // calculate image width and height base on given width and height
+      // if one of them is not given, use the other one to calculate
+      // if both are not given, use default width and height
+      let transformWidth, transformHeight;
+      if (!_width && !_height) {
+        transformWidth = width;
+        transformHeight = height;
+      } else if (!_width) {
+        transformHeight = _height;
+        transformWidth = transformHeight * ratio;
+      } else if (!_height) {
+        transformWidth = _width;
+        transformHeight = transformWidth / ratio;
+      }
+
+      console.log(transformWidth, transformHeight, width, height);
+
       const paragraph = new docx.Paragraph({
+        style: 'Normal',
         children: [
           new docx.ImageRun({
-            data,
+            data: base64,
             transformation: {
-              width,
-              height,
+              width: transformWidth,
+              height: transformHeight,
             },
           }),
         ],
@@ -269,7 +329,16 @@ export async function generate() {
           ...getCCParagraphs('XXX', '台北市中山區'),
 
           // seal
-          await createImageParagraph(sealImageUrl, docx.convertInchesToTwip(4.5), docx.convertInchesToTwip(1.4683098592)),
+          await createImageParagraph(
+            sealImageUrl,
+            docx.convertInchesToTwip(4.5),
+          ),
+
+          // attachments
+          ...await createAttachmentParagraphs([
+            'https://i.imgur.com/taKOy2v.png',
+            'https://i.imgur.com/LrUki4U.jpg',
+          ]),
         ],
       },
     ],

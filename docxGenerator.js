@@ -76,6 +76,89 @@ function getReceiverParagraphs(serealNumber = '00000000') {
   );
 }
 
+function getSubjectParagraphs(location = '') {
+  const context = [
+    `主旨：舉報 ${location} 地號土地疑有違法新增鐵皮廠房情事。`,
+    '',
+    '說明：',
+  ];
+
+  return context.map(
+    (text) =>
+      new docx.Paragraph({
+        spacing: {
+          line: 21,
+        },
+        children: [
+          new docx.TextRun({
+            text,
+            size: 14,
+          }),
+        ],
+        alignment: docx.AlignmentType.LEFT,
+      }),
+  );
+}
+
+function getContextParagraphs(location = '') {
+  const context = [
+    '一、　依工廠管理輔導法第28-1、28-12條辦理。',
+    // eslint-disable-next-line no-irregular-whitespace
+    `二、　${location} 地號土地新發現新增建鐵皮廠房情形，經地球公民基金會志工拍攝存證，如附件一。因懷疑係屬非法建築行為，函請貴府調查處理。若有不法情事，並應依法裁處，請貴府將查處情形，惠知本會。`,
+  ];
+
+  return context.map(
+    (text) =>
+      new docx.Paragraph({
+        spacing: {
+          line: 21,
+        },
+        children: [
+          new docx.TextRun({
+            text,
+            size: 14,
+          }),
+        ],
+        alignment: docx.AlignmentType.LEFT,
+      }),
+  );
+}
+
+function getCCParagraphs(legislator = 'XXX', _townName = null) {
+  let townName;
+
+  if (_townName) {
+    townName = _townName
+      .replace('臺灣省', '')
+      .replace('台灣省', '')
+      .slice(0, 3);
+  } else {
+    townName = 'UNKNOWN';
+  }
+
+  const context = [
+    '',
+    `正本：${townName}政府`,
+    `副本：內政部、行政院農委會、經濟部工業局、經濟部中部辦公室、立法委員${legislator}國會辦公室`,
+  ];
+
+  return context.map(
+    (text) =>
+      new docx.Paragraph({
+        spacing: {
+          line: 12,
+        },
+        children: [
+          new docx.TextRun({
+            text,
+            size: 12,
+          }),
+        ],
+        alignment: docx.AlignmentType.LEFT,
+      }),
+  );
+}
+
 async function createImageParagraph(imageURL) {
   return fetchImageAsBase64(imageURL)
     .then((data) => {
@@ -153,6 +236,15 @@ export async function generate() {
 
           // receiver
           ...getReceiverParagraphs('00000000'),
+
+          // subject
+          ...getSubjectParagraphs('台北市中山區中山北路一段'),
+
+          // context
+          ...getContextParagraphs('台北市中山區中山北路一段'),
+
+          // cc
+          ...getCCParagraphs('XXX', '台北市中山區'),
 
           paragraph,
         ],

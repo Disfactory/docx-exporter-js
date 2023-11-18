@@ -254,8 +254,7 @@ async function createImageParagraph(imageURL, _width, _height) {
     });
 }
 
-// Main document generation function
-export async function generate({
+async function generateDocumentParagraphs({
   sender = '賴沛蓮',
   serialNumber = '00000000',
   location = '台北市中山區中山北路一段',
@@ -263,6 +262,96 @@ export async function generate({
   townName = '台北市中山區',
   imageUrls = [],
 }) {
+  return [
+    // original
+    new docx.Paragraph({
+      style: 'Normal',
+      children: [
+        new docx.TextRun({
+          text: '正本',
+        }),
+      ],
+      spacing: {
+        after: 300,
+      },
+    }),
+
+    // title
+    new docx.Paragraph({
+      style: 'Normal',
+      children: [
+        new docx.TextRun({
+          text: '地球公民基金會 函',
+          size: 40,
+        }),
+      ],
+      spacing: {
+        after: 300,
+      },
+      alignment: docx.AlignmentType.CENTER,
+    }),
+
+    // sender
+    ...getSenderParagraphs(sender),
+
+    // receiver
+    ...getReceiverParagraphs(serialNumber),
+
+    // subject
+    ...getSubjectParagraphs(location),
+
+    // context
+    ...getContextParagraphs(location),
+
+    // cc
+    ...getCCParagraphs(legislator, townName),
+
+    // seal
+    await createImageParagraph(sealImageUrl, docx.convertInchesToTwip(4.5)),
+
+    // attachments
+    ...(await createAttachmentParagraphs(imageUrls)),
+  ];
+}
+
+// Main document generation function
+/**
+ * @param {{
+ *   sender: string,
+ *   serialNumber: string,
+ *   location: string,
+ *   legislator: string,
+ *   townName: string,
+ *   imageUrls: string[],
+ * }[]} docsData
+ */
+export async function generate(docsData) {
+  const groupsOfParagraphs = await Promise.all(
+    docsData.map(generateDocumentParagraphs),
+  );
+
+  // for each group of paragraphs, add a page break paragraph after it
+  const breakParagraphs = groupsOfParagraphs.map(() => {
+    return new docx.Paragraph({
+      style: 'Normal',
+      children: [
+        new docx.TextRun({
+          text: '',
+        }),
+      ],
+      pageBreakBefore: true,
+    });
+  });
+
+  const paragraphsWithBreaks = groupsOfParagraphs.map(
+    (paragraphs, index) => {
+      return [...paragraphs, breakParagraphs[index]];
+    },
+  ).flat();
+
+  // remove the end page break
+  paragraphsWithBreaks.pop();
+
   const doc = new docx.Document({
     // creator: 'Your Creator Name',
     // title: 'Your Document Title',
@@ -291,59 +380,7 @@ export async function generate({
     },
     sections: [
       {
-        children: [
-          // original
-          new docx.Paragraph({
-            style: 'Normal',
-            children: [
-              new docx.TextRun({
-                text: '正本',
-              }),
-            ],
-            spacing: {
-              after: 300,
-            },
-          }),
-
-          // title
-          new docx.Paragraph({
-            style: 'Normal',
-            children: [
-              new docx.TextRun({
-                text: '地球公民基金會 函',
-                size: 40,
-              }),
-            ],
-            spacing: {
-              after: 300,
-            },
-            alignment: docx.AlignmentType.CENTER,
-          }),
-
-          // sender
-          ...getSenderParagraphs(sender),
-
-          // receiver
-          ...getReceiverParagraphs(serialNumber),
-
-          // subject
-          ...getSubjectParagraphs(location),
-
-          // context
-          ...getContextParagraphs(location),
-
-          // cc
-          ...getCCParagraphs(legislator, townName),
-
-          // seal
-          await createImageParagraph(
-            sealImageUrl,
-            docx.convertInchesToTwip(4.5),
-          ),
-
-          // attachments
-          ...await createAttachmentParagraphs(imageUrls),
-        ],
+        children: paragraphsWithBreaks,
       },
     ],
   });

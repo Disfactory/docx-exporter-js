@@ -14,11 +14,14 @@ function getSenderParagraphs(sender = '賴沛蓮') {
   const email = STAFF_EMAIL[sender] || 'cet@cet-taiwan.org';
 
   const context = [
+    '',
     '地址：10049台北市北平東路28號9樓之2',
     '電話：02-23920371',
     '傳真：02-23920381',
     `連絡人：${sender}`,
     `電子信箱：${email}`,
+    '',
+    '',
   ];
 
   return context.map(
@@ -65,7 +68,8 @@ function getReceiverParagraphs(serealNumber = '00000000') {
       new docx.Paragraph({
         style: 'Normal',
         spacing: {
-          line: 100,
+          after: 150,
+          line: 200,
         },
         children: [
           new docx.TextRun({
@@ -90,7 +94,9 @@ function getSubjectParagraphs(location = '') {
       new docx.Paragraph({
         style: 'Normal',
         spacing: {
-          line: 210,
+          line: 420,
+          after: 100,
+          lineRule: docx.LineRuleType.EXACT,
         },
         children: [
           new docx.TextRun({
@@ -115,7 +121,8 @@ function getContextParagraphs(location = '') {
       new docx.Paragraph({
         style: 'Normal',
         spacing: {
-          line: 210,
+          line: 420,
+          lineRule: docx.LineRuleType.EXACT,
         },
         children: [
           new docx.TextRun({
@@ -164,7 +171,7 @@ function getCCParagraphs(legislator = 'XXX', _townName = null) {
   );
 }
 
-async function createImageParagraph(imageURL) {
+async function createImageParagraph(imageURL, width = 100, height = 100) {
   return fetchImageAsBase64(imageURL)
     .then((data) => {
       console.log(data.length);
@@ -173,18 +180,12 @@ async function createImageParagraph(imageURL) {
           new docx.ImageRun({
             data,
             transformation: {
-              width: 100,
-              height: 100,
-            },
-            altText: {
-              title: 'Image Title',
-              description: 'Image Description',
+              width,
+              height,
             },
           }),
         ],
       });
-
-      console.log(paragraph);
 
       return paragraph;
     })
@@ -233,7 +234,7 @@ export async function generate() {
               }),
             ],
             spacing: {
-              line: 200,
+              after: 300,
             },
           }),
 
@@ -246,6 +247,9 @@ export async function generate() {
                 size: 40,
               }),
             ],
+            spacing: {
+              after: 300,
+            },
             alignment: docx.AlignmentType.CENTER,
           }),
 
@@ -263,6 +267,9 @@ export async function generate() {
 
           // cc
           ...getCCParagraphs('XXX', '台北市中山區'),
+
+          // seal
+          await createImageParagraph(sealImageUrl, docx.convertInchesToTwip(4.5), docx.convertInchesToTwip(1.4683098592)),
         ],
       },
     ],

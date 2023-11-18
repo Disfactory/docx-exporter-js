@@ -11,8 +11,8 @@ document.querySelector('#download').addEventListener('click', async () => {
       legislator: 'XXX',
       townName: '台北市中山區',
       imageUrls: [
-        'https://i.imgur.com/taKOy2v.png',
-        'https://i.imgur.com/LrUki4U.jpg',
+        // 'https://i.imgur.com/taKOy2v.png',
+        // 'https://i.imgur.com/LrUki4U.jpg',
       ],
     },
   ];

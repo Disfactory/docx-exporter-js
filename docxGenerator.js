@@ -343,11 +343,11 @@ export async function generate(docsData) {
     });
   });
 
-  const paragraphsWithBreaks = groupsOfParagraphs.map(
-    (paragraphs, index) => {
+  const paragraphsWithBreaks = groupsOfParagraphs
+    .map((paragraphs, index) => {
       return [...paragraphs, breakParagraphs[index]];
-    },
-  ).flat();
+    })
+    .flat();
 
   // remove the end page break
   paragraphsWithBreaks.pop();
@@ -378,11 +378,27 @@ export async function generate(docsData) {
         },
       ],
     },
-    sections: [
-      {
-        children: paragraphsWithBreaks,
+    sections: [],
+  });
+
+  doc.addSection({
+    properties: {
+      type: docx.SectionType.NEXT_PAGE,
+      page: {
+        margin: {
+          top: docx.convertInchesToTwip(1),
+          right: docx.convertInchesToTwip(1),
+          bottom: docx.convertInchesToTwip(1),
+          left: docx.convertInchesToTwip(1),
+        },
+        size: {
+          // A4
+          width: docx.convertMillimetersToTwip(210),
+          height: docx.convertMillimetersToTwip(297),
+        },
       },
-    ],
+    },
+    children: paragraphsWithBreaks,
   });
 
   return doc;

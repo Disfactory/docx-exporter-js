@@ -255,7 +255,14 @@ async function createImageParagraph(imageURL, _width, _height) {
 }
 
 // Main document generation function
-export async function generate() {
+export async function generate({
+  sender = '賴沛蓮',
+  serialNumber = '00000000',
+  location = '台北市中山區中山北路一段',
+  legislator = 'XXX',
+  townName = '台北市中山區',
+  imageUrls = [],
+}) {
   const doc = new docx.Document({
     // creator: 'Your Creator Name',
     // title: 'Your Document Title',
@@ -314,19 +321,19 @@ export async function generate() {
           }),
 
           // sender
-          ...getSenderParagraphs(),
+          ...getSenderParagraphs(sender),
 
           // receiver
-          ...getReceiverParagraphs('00000000'),
+          ...getReceiverParagraphs(serialNumber),
 
           // subject
-          ...getSubjectParagraphs('台北市中山區中山北路一段'),
+          ...getSubjectParagraphs(location),
 
           // context
-          ...getContextParagraphs('台北市中山區中山北路一段'),
+          ...getContextParagraphs(location),
 
           // cc
-          ...getCCParagraphs('XXX', '台北市中山區'),
+          ...getCCParagraphs(legislator, townName),
 
           // seal
           await createImageParagraph(
@@ -335,10 +342,7 @@ export async function generate() {
           ),
 
           // attachments
-          ...await createAttachmentParagraphs([
-            'https://i.imgur.com/taKOy2v.png',
-            'https://i.imgur.com/LrUki4U.jpg',
-          ]),
+          ...await createAttachmentParagraphs(imageUrls),
         ],
       },
     ],

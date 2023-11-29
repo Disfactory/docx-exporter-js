@@ -177,7 +177,7 @@ async function createAttachmentParagraphs(imageUrls) {
   /** @type {docx.Paragraph[]} */
   const imageParagraphs = await Promise.all(
     imageUrls.map((url) => {
-      return createImageParagraph(url, docx.convertInchesToTwip(3));
+      return createImageParagraph(url, docx.convertInchesToTwip(0.45));
     }),
   );
 
@@ -309,7 +309,7 @@ async function generateDocumentParagraphs({
     ...getCCParagraphs(legislator, townName),
 
     // seal
-    await createImageParagraph(sealImageUrl, docx.convertInchesToTwip(4.5)),
+    await createImageParagraph(sealImageUrl, docx.convertInchesToTwip(0.45)),
 
     // attachments
     ...(await createAttachmentParagraphs(imageUrls)),

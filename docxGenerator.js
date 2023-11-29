@@ -29,7 +29,8 @@ function getSenderParagraphs(sender = '賴沛蓮') {
       new docx.Paragraph({
         style: 'Normal',
         spacing: {
-          line: 100,
+          line: 240,
+          lineRule: docx.LineRuleType.EXACT,
         },
         children: [
           new docx.TextRun({
@@ -158,7 +159,8 @@ function getCCParagraphs(legislator = 'XXX', _townName = null) {
       new docx.Paragraph({
         style: 'Normal',
         spacing: {
-          line: 120,
+          line: 360,
+          lineRule: docx.LineRuleType.EXACT,
         },
         children: [
           new docx.TextRun({

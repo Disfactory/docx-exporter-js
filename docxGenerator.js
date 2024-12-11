@@ -112,7 +112,7 @@ function getSubjectParagraphs(location = '') {
 
 function getContextParagraphs(location = '') {
   const context = [
-    '一、　依工廠管理輔導法第28-1、28-12條辦理。',
+    '一、　依工廠管理輔導法第28-1、28-12條、區域計畫法第21條辦理。',
     // eslint-disable-next-line no-irregular-whitespace
     `二、　${location} 地號土地新發現新增建鐵皮廠房情形，經地球公民基金會志工拍攝存證，如附件一。因懷疑係屬非法建築行為，函請貴府調查處理。若有不法情事，並應依法裁處，請貴府將查處情形，惠知本會。`,
   ];

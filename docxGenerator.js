@@ -151,7 +151,7 @@ function getCCParagraphs(legislator = 'XXX', _townName = null) {
   const context = [
     '',
     `正本：${townName}政府`,
-    `副本：內政部、行政院農委會、經濟部工業局、經濟部中部辦公室、立法委員${legislator}國會辦公室`,
+    `副本：內政部國土署、農業部、經濟部產業發展署、立法委員${legislator}國會辦公室`,
   ];
 
   return context.map(

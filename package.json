@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "pnpm run build:lib && pnpm run build:site",
     "preview": "vite preview",
+    "build:lib": "vite build",
+    "build:site": "vite build --config vite.site.config.js",
     "fmt": "prettier --write .",
     "lint": "eslint --fix ."
   },
@@ -22,5 +24,6 @@
     "prettier": "^3.1.0",
     "typescript": "^5.2.2",
     "vite": "^4.4.5"
-  }
+  },
+  "packageManager": "pnpm@9.5.0+sha256.dbdf5961c32909fb030595a9daa1dae720162e658609a8f92f2fa99835510ca5"
 }

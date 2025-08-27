@@ -8,7 +8,7 @@
     "build": "pnpm run build:lib && pnpm run build:site",
     "preview": "vite preview",
     "build:lib": "vite build",
-    "build:site": "vite build --config vite.site.config.js",
+    "build:site": "vite build --config vite.site.config.js && cp dist/export-word-docx.* dist-site/",
     "fmt": "prettier --write .",
     "lint": "eslint --fix ."
   },

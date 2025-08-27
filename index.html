@@ -1,14 +1,240 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-TW">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.js"></script>
-    <title>Vite App</title>
+    <title>DOCX Exporter - 地球公民基金會文件產生器</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+          'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+        color: white;
+        padding: 40px 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 300;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .content {
+        padding: 40px 30px;
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 6px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        min-width: 120px;
+      }
+
+      .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
+      }
+
+      .btn.primary {
+        background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+      }
+
+      .btn.primary:hover {
+        box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+      }
+
+      .btn.secondary {
+        background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+      }
+
+      .btn.secondary:hover {
+        box-shadow: 0 5px 15px rgba(149, 165, 166, 0.4);
+      }
+
+      .description {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #3498db;
+      }
+
+      .description p {
+        margin-bottom: 10px;
+      }
+
+      .description ul {
+        margin-left: 20px;
+      }
+
+      .download-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .download-item:last-child {
+        margin-bottom: 0;
+      }
+
+      .download-info h3 {
+        font-size: 1.1rem;
+        margin-bottom: 5px;
+        color: #2c3e50;
+      }
+
+      .download-info p {
+        font-size: 0.9rem;
+        color: #7f8c8d;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 10px;
+          border-radius: 8px;
+        }
+
+        .header {
+          padding: 30px 20px;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .content {
+          padding: 30px 20px;
+        }
+
+        .download-item {
+          flex-direction: column;
+          gap: 15px;
+          text-align: center;
+        }
+
+        .button-group {
+          justify-content: center;
+        }
+      }
+    </style>
   </head>
   <body>
-    <button id="download">Download</button>
+    <div class="container">
+      <header class="header">
+        <h1>DOCX Exporter</h1>
+        <p>地球公民基金會文件產生器</p>
+      </header>
+
+      <main class="content">
+        <section class="section">
+          <h2>📄 產生文件</h2>
+          <div class="description">
+            <p>點擊下方按鈕產生並下載違章工廠舉報文件。</p>
+            <p>
+              此工具會自動產生包含必要資訊的正式文件，供地球公民基金會使用。
+            </p>
+          </div>
+          <div class="button-group">
+            <button id="download" class="btn primary">📥 下載 DOCX 文件</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <h2>🔧 開發者資源</h2>
+          <div class="description">
+            <p>以下是可供開發者使用的 JavaScript 函式庫檔案：</p>
+            <ul>
+              <li><strong>ES Module:</strong> 適用於現代 JavaScript 專案</li>
+              <li><strong>UMD:</strong> 適用於傳統瀏覽器環境或 Node.js</li>
+            </ul>
+          </div>
+
+          <div class="download-item">
+            <div class="download-info">
+              <h3>ES Module 版本</h3>
+              <p>export-word-docx.js - 適用於 ES6+ 模組系統</p>
+            </div>
+            <a href="./export-word-docx.js" download class="btn secondary"
+              >📦 下載 ES Module</a
+            >
+          </div>
+
+          <div class="download-item">
+            <div class="download-info">
+              <h3>UMD 版本</h3>
+              <p>export-word-docx.umd.cjs - 通用模組定義格式</p>
+            </div>
+            <a href="./export-word-docx.umd.cjs" download class="btn secondary"
+              >📦 下載 UMD</a
+            >
+          </div>
+        </section>
+      </main>
+    </div>
+
     <script type="module" src="./main.js"></script>
   </body>
 </html>

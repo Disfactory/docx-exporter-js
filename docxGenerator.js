@@ -209,7 +209,12 @@ async function createAttachmentParagraphs(imageUrls) {
   return mappedParagraphs;
 }
 
-async function createImageParagraph(imageURL, _width, _height) {
+async function createImageParagraph(
+  imageURL,
+  _width,
+  _height,
+  alignment = docx.AlignmentType.LEFT,
+) {
   return fetchImageAsBase64(imageURL)
     .then((data) => {
       const {
@@ -238,6 +243,7 @@ async function createImageParagraph(imageURL, _width, _height) {
 
       const paragraph = new docx.Paragraph({
         style: 'Normal',
+        alignment: alignment,
         children: [
           new docx.ImageRun({
             data: base64,
@@ -309,7 +315,12 @@ async function generateDocumentParagraphs({
     ...getCCParagraphs(legislator, townName),
 
     // seal
-    await createImageParagraph(sealImageUrl, docx.convertInchesToTwip(0.45)),
+    await createImageParagraph(
+      sealImageUrl,
+      docx.convertInchesToTwip(0.225),
+      null,
+      docx.AlignmentType.RIGHT,
+    ),
 
     // attachments
     ...(await createAttachmentParagraphs(imageUrls)),

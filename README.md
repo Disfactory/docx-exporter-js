@@ -17,7 +17,7 @@ Click the download button will generate a docx file with sample data inside [`ma
 pnpm build
 ```
 
-This will generate a `dist` folder with `export-word-docx.js` inside. Copy the file to your project and include it with script tag.
+This will generate a `dist` folder with `export-word-docx.js` inside. Copy the file to `../Disfactory/backend/static/docx/export-word-docx.js` so the Disfactory backend can serve it and include it with a script tag from `/static/docx/export-word-docx.js`.
 
 ## Usage
 
